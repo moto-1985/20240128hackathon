@@ -1,0 +1,109 @@
+openapi: 3.1.0
+info:
+  title: EmailGPT
+  description: EmailGPT
+  version: v1.0.0
+servers:
+  - url: https://script.google.com
+paths:
+  /macros/s/{あなたのデプロイID}/exec:
+    get:
+      description: getEmails
+      operationId: getEmails
+      parameters:
+        - name: searchDate
+          in: query
+          required: true
+          description: "mails search date"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    messageId:
+                      type: string
+                    subject:
+                      type: string
+                    from:
+                      type: string
+                    truncatedBody:
+                      type: string
+                    receivedDate:
+                      type: string
+                  required:
+                    - messageId
+                    - subject
+                    - from
+                    - truncatedBody
+                    - receivedDate
+        "400":
+          description: "Bad request"
+        "401":
+          description: "Unauthorized"
+        "404":
+          description: "Not Found"
+        "429":
+          description: "Too Many Requests"
+        "500":
+          description: "Internal Server Error"
+    post:
+      description: "Create or Delete Email Draft"
+      operationId: CreateOrDeleteEmailDraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  description: "Specify 'CREATE' for creating or 'DELETE' for deleting an email"
+                messageId:
+                  type: string
+                  description: "Required if 'path' is 'DELETE'"
+                from:
+                  type: string
+                  description: "Required if 'path' is 'CREATE'"
+                subject:
+                  type: string
+                  description: "Required if 'path' is 'CREATE'"
+                body:
+                  type: string
+                  description: "Required if 'path' is 'CREATE'"
+              required:
+                - path
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: "Bad request"
+        "401":
+          description: "Unauthorized"
+        "404":
+          description: "Not Found"
+        "429":
+          description: "Too Many Requests"
+        "500":
+          description: "Internal Server Error"
+components:
+  schemas:
+    GetResponse:
+      type: object
+      properties:
+        result:
+          type: string
